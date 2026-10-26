@@ -22,6 +22,7 @@ Connect IQ Mobile SDK.
 | `watch/` | Monkey C app + glance, hand-written protobuf codec, relevance, operator logos |
 | `tools/gtfs-index/` | builds the stop/line SQLite index from the Ministry of Transport GTFS |
 | `tools/logos/` | operator logo SVG → per-screen PNG, dominant-colour tool |
+| `tools/app-icon/` | the app icon (bus + clock): master SVG, `build.py` makes the 500 px Connect IQ Store icon, watch launcher icons and the Android adaptive icon |
 | `tools/android/setup-sdk.sh` | installs the Android SDK pieces and the `nextbus` emulator |
 | `.github/workflows/index.yml` | nightly index build, published as a release asset |
 

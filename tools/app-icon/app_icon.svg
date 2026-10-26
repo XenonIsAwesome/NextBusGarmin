@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Next Bus: a bus seen from the front, with a clock showing when it arrives. Plain shapes only
+       (rect, circle, path, line) so the Connect IQ resource compiler can rasterise it for the watch. -->
+  <rect width="512" height="512" rx="112" fill="#14407F"/>
+
+  <!-- bus -->
+  <rect x="62" y="226" width="26" height="46" rx="10" fill="#0E2A52"/>
+  <rect x="376" y="226" width="26" height="46" rx="10" fill="#0E2A52"/>
+  <rect x="116" y="388" width="52" height="52" rx="14" fill="#0E2A52"/>
+  <rect x="296" y="388" width="52" height="52" rx="14" fill="#0E2A52"/>
+  <rect x="88" y="150" width="288" height="262" rx="46" fill="#FFC83D"/>
+  <rect x="88" y="368" width="288" height="26" fill="#E0A11B"/>
+  <rect x="152" y="166" width="96" height="24" rx="10" fill="#0E2A52"/>
+  <rect x="116" y="204" width="232" height="112" rx="20" fill="#0E2A52"/>
+  <path d="M232 204 L276 204 L240 316 L196 316 Z" fill="#1D4A86"/>
+  <circle cx="140" cy="346" r="21" fill="#FFFFFF"/>
+  <circle cx="324" cy="346" r="21" fill="#FFFFFF"/>
+  <rect x="196" y="334" width="72" height="24" rx="10" fill="#0E2A52"/>
+
+  <!-- clock -->
+  <circle cx="368" cy="150" r="110" fill="#14407F"/>
+  <circle cx="368" cy="150" r="96" fill="#FFFFFF"/>
+  <circle cx="368" cy="150" r="80" fill="#FFFFFF" stroke="#FF7A1A" stroke-width="12"/>
+  <rect x="362" y="82" width="12" height="18" rx="5" fill="#14407F"/>
+  <rect x="362" y="200" width="12" height="18" rx="5" fill="#14407F"/>
+  <rect x="300" y="144" width="18" height="12" rx="5" fill="#14407F"/>
+  <rect x="418" y="144" width="18" height="12" rx="5" fill="#14407F"/>
+  <line x1="368" y1="150" x2="368" y2="100" stroke="#14407F" stroke-width="13" stroke-linecap="round"/>
+  <line x1="368" y1="150" x2="402" y2="168" stroke="#14407F" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="368" cy="150" r="10" fill="#FF7A1A"/>
+</svg>

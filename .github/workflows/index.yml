@@ -1,0 +1,31 @@
+# Builds the stop/line index from the nightly Ministry of Transport GTFS and publishes it as a
+# release asset that the Android app downloads (see tools/gtfs-index/README.md).
+name: Publish stop index
+on:
+  schedule:
+    - cron: "30 3 * * *"   # the GTFS is rebuilt overnight
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build index
+        run: python3 tools/gtfs-index/build_index.py --out "$RUNNER_TEMP/index.db"
+      - name: Package and write manifest
+        run: |
+          python3 tools/gtfs-index/make_manifest.py "$RUNNER_TEMP/index.db" "$RUNNER_TEMP/out" \
+            "https://github.com/${{ github.repository }}/releases/download/index-latest"
+      - name: Publish release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view index-latest >/dev/null 2>&1 || \
+            gh release create index-latest --title "Stop index (rolling)" --notes "Rebuilt nightly by index.yml."
+          gh release upload index-latest "$RUNNER_TEMP/out/index.db.gz" "$RUNNER_TEMP/out/manifest.json" --clobber

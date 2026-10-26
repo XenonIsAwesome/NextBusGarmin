@@ -20,7 +20,7 @@ android {
         buildConfigField("String", "WATCH_APP_ID", "\"fc1842ca-f09c-444c-a9dc-572fdc5d0d2b\"")
         buildConfigField("String", "WATCH_APP_STORE_ID", "\"\"")
         // Where the prebuilt index is published (see docs/README.md). Empty disables updates.
-        buildConfigField("String", "INDEX_MANIFEST_URL", "\"\"")
+        buildConfigField("String", "INDEX_MANIFEST_URL", "\"https://github.com/XenonIsAwesome/NextBusGarmin/releases/download/index-latest/manifest.json\"")
     }
 
     buildFeatures {

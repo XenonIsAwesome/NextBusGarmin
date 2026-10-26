@@ -61,7 +61,7 @@ class NextBusGarminView extends WatchUi.View {
         // centre sits ~1.7% of the screen height below the text's vertical centre.
         var inkShift = Format.isNumeric(line) ? h * 17 / 1000 : 0;
         Operators.drawBadge(dc, sel[Store.S_OP] as Number, startX, lineY - badgeH / 2 + inkShift, badgeH);
-        dc.setColor(Operators.color(sel[Store.S_OP] as Number), Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Operators.color(sel[Store.S_OP] as Number, dc), Graphics.COLOR_TRANSPARENT);
         dc.drawText(startX + badgeW + gap, lineY, lineFont, line,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 

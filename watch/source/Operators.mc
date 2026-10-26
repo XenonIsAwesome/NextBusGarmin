@@ -6,23 +6,28 @@ import Toybox.WatchUi;
 // have one (tools/logos/SOURCES.md), otherwise a short code on a colour. Ids
 // are curlbus / Ministry of Transport operator ids (https://curlbus.app/operators).
 module Operators {
-    // [id, code, colour]
+    // [id, code, colour, colour on 64-colour screens]. Colours of operators with a logo
+    // are the logo's dominant colour (the most frequent rendered colour, not an average);
+    // the others are placeholders. Regenerate both columns with
+    // `python3 tools/logos/dominant_colors.py --table`. The fr255/fr255s display only
+    // 4 levels per channel and would snap the true colour to a different hue, so those
+    // screens use the closest palette colour instead (fr165/fr165m are AMOLED).
     const TABLE = [
-        [3, "E", 0x00A650],   // Egged
-        [4, "ET", 0x6BBE45],  // Egged Taavura
-        [5, "D", 0x0072BC],   // Dan
-        [6, "SA", 0x8A5A2B],  // Nazareth UNBS
-        [7, "NT", 0x7B4FA0],  // Nazareth Transport & Tourism
-        [8, "GB", 0xC0392B],  // GB Tours
-        [10, "EL", 0x1ABC9C], // Eilot
-        [14, "NE", 0xE67E22], // Nativ Express
-        [15, "M", 0xF08A00],  // Metropoline
-        [16, "S", 0xD81B60],  // Superbus
-        [18, "K", 0x2E86C1],  // Kavim
-        [20, "C", 0x16A085],  // Carmelit
-        [21, "CP", 0x5D6D7E], // Citypass
-        [23, "G", 0x884EA0],  // Galim
-        [24, "GO", 0x7D6608]  // Golan
+        [3, "E", 0x7ED19F, 0xAAFFAA],   // Egged
+        [4, "ET", 0x2F83CC, 0x55AAFF],  // Egged Taavura
+        [5, "D", 0x205CAB, 0x0055AA],   // Dan
+        [6, "SA", 0x8A5A2B, 0xAA5500],  // Nazareth UNBS
+        [7, "NT", 0xEC2227, 0xFF5555],  // Nazareth Transport & Tourism
+        [8, "GB", 0xC0392B, 0xAA0000],  // GB Tours
+        [10, "EL", 0x1ABC9C, 0x00AAAA], // Eilot
+        [14, "NE", 0xF7BA69, 0xFFAA55], // Nativ Express
+        [15, "M", 0xFF8200, 0xFF5500],  // Metropoline
+        [16, "S", 0x008A5E, 0x55AA55],  // Superbus
+        [18, "K", 0x99CA3C, 0x55AA00],  // Kavim
+        [20, "C", 0x16A085, 0x00AAAA],  // Carmelit
+        [21, "CP", 0x5D6D7E, 0x555555], // Citypass
+        [23, "G", 0x884EA0, 0xAA55AA],  // Galim
+        [24, "GO", 0x7D6608, 0x555500]  // Golan
     ] as Array;
 
     // Returns the table row for an operator id, or null if unknown (no badge).
@@ -37,10 +42,16 @@ module Operators {
     }
 
     // The operator's colour (used for the line number), white if unknown.
-    function color(id as Number) as Number {
+    function color(id as Number, dc as Dc) as Number {
         var row = find(id);
-        return row == null ? Graphics.COLOR_WHITE : row[2] as Number;
+        if (row == null) {
+            return Graphics.COLOR_WHITE;
+        }
+        return (dc.getWidth() >= AMOLED_MIN_WIDTH ? row[2] : row[3]) as Number;
     }
+
+    // Screens this wide are the AMOLED ones (fr165 family, 390 px); narrower are 64-colour.
+    const AMOLED_MIN_WIDTH = 390;
 
     var _logoId as Number = -1;
     var _logo as WatchUi.BitmapResource? = null;
@@ -103,7 +114,7 @@ module Operators {
         }
         var row = find(id) as Array;
         var code = row[1] as String;
-        dc.setColor(row[2] as Number, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(color(id, dc), Graphics.COLOR_TRANSPARENT);
         dc.fillRoundedRectangle(x, y, width, height, height / 4);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawText(x + width / 2, y + height / 2, Graphics.FONT_XTINY, code,

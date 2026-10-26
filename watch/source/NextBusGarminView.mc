@@ -215,7 +215,7 @@ class NextBusGarminView extends WatchUi.View {
             text = "Phone not responding";
             warn = true;
         }
-        if (Config.FAKE_PHONE && Link.fake != null) {
+        if (Config.FAKE_PHONE && Config.FAKE_SCENARIO_TAG && Link.fake != null) {
             text = "[" + Link.fake.scenario + "] " + text;
         }
         dc.setColor(warn ? Graphics.COLOR_YELLOW : Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);

@@ -17,6 +17,8 @@ module Config {
     // Simulator / no-phone development: answer requests from FakePhone instead
     // of the Mobile SDK link. MUST be false for a real build.
     const FAKE_PHONE = true;
+    // Show the fake scenario number ("[2] ...") in the footer; off for demos/videos.
+    const FAKE_SCENARIO_TAG = false;
     const APP_VERSION = "0.1.0";
     // Relevance: walking speed (m/s), buffer added to the walk (s), and the
     // distance beyond which a selection is deprioritised (m).

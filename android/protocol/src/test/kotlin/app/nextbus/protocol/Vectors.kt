@@ -3,14 +3,14 @@ package app.nextbus.protocol
 /** One golden vector: the message, plus its expected decode in the watch's compact form. */
 class Vector(val name: String, val envelope: Envelope, val expected: String)
 
-private fun selection(id: Int, line: String, code: String, stop: String, dest: String, lat: Int, lon: Int) =
+private fun selection(id: Int, line: String, code: String, stop: String, dest: String, lat: Int, lon: Int, op: Int = 0) =
     Selection.newBuilder().setId(id).setLine(line).setStopCode(code).setStopName(stop)
-        .setDestination(dest).setLatE6(lat).setLonE6(lon).build()
+        .setDestination(dest).setLatE6(lat).setLonE6(lon).setOperatorId(op).build()
 
 private fun q(s: String) = "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
 private fun selJson(s: Selection) =
-    "[${s.id},${q(s.line)},${q(s.stopCode)},${q(s.stopName)},${q(s.destination)},${s.latE6},${s.lonE6}]"
+    "[${s.id},${q(s.line)},${q(s.stopCode)},${q(s.stopName)},${q(s.destination)},${s.latE6},${s.lonE6},${s.operatorId}]"
 
 private fun arrivals(id: Int, status: Status, vararg t: Int) =
     SelectionArrivals.newBuilder().setSelectionId(id).setStatus(status).addAllArrivalTimes(t.toList()).build()
@@ -19,7 +19,7 @@ private fun arrJson(a: SelectionArrivals) =
     "[${a.selectionId},${a.status.number},[${a.arrivalTimesList.joinToString(",")}]]"
 
 private val TEN = (1..10).map {
-    selection(it, "${it * 11}", "3660$it", "Beit Loewenstein/Ahuza", "Sport Campus/Weizmann", 32184760 + it, 34855867 - it)
+    selection(it, "${it * 11}", "3660$it", "Beit Loewenstein/Ahuza", "Sport Campus/Weizmann", 32184760 + it, 34855867 - it, listOf(3, 5, 15, 18, 16)[it % 5])
 }
 
 private fun syncVector(name: String, list: List<Selection>): Vector {
@@ -73,7 +73,7 @@ val VECTORS: List<Vector> = listOf(
         "[1,300,2,\"2.10.3\"]",
     ),
     // Negative coordinates exercise the zigzag (sint32) path.
-    syncVector("selections_negative_coords", listOf(selection(1, "5", "100", "Opera House", "Circular Quay", -33_856_800, -151_215_300))),
+    syncVector("selections_negative_coords", listOf(selection(1, "5", "100", "Opera House", "Circular Quay", -33_856_800, -151_215_300, 3))),
     syncVector("selections_2", TEN.take(2)),
     syncVector("selections_10", TEN),
     syncVector("selections_empty", emptyList()),

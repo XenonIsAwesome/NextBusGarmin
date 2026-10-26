@@ -7,7 +7,7 @@ import Toybox.StringUtil;
 // can be stored in Application.Storage as-is:
 //
 //   Hello          [T_HELLO, version, role, appVersion]
-//   SelectionsSync [T_SELECTIONS, version, [[id, line, stopCode, stopName, destination, latE6, lonE6], ...]]
+//   SelectionsSync [T_SELECTIONS, version, [[id, line, stopCode, stopName, destination, latE6, lonE6, operatorId], ...]]
 //   ArrivalsUpdate [T_ARRIVALS, version, generatedAt, [[selectionId, status, [epoch, ...]], ...]]
 //   RefreshRequest [T_REFRESH, version, [selectionId, ...], reason]
 //
@@ -140,7 +140,7 @@ module Proto {
     }
 
     function decodeSelection(r as Reader, e as Number) as Array {
-        var out = [0, "", "", "", "", 0, 0] as Array;
+        var out = [0, "", "", "", "", 0, 0, 0] as Array;
         while (r.pos < e && !r.bad) {
             var tag = r.varint();
             var f = tag >> 3;
@@ -151,6 +151,8 @@ module Proto {
                 out[f - 1] = r.string(r.lengthEnd());
             } else if ((f == 6 || f == 7) && w == 0) {
                 out[f - 1] = zigzag(r.varint());
+            } else if (f == 8 && w == 0) {
+                out[7] = r.varint();
             } else {
                 r.skip(w);
             }

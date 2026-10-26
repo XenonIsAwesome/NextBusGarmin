@@ -6,7 +6,7 @@ import Toybox.WatchUi;
 // positional form and mirrored to Application.Storage so the glance can read
 // them without running the decoder.
 //
-//   selection [id, line, stopCode, stopName, destination, latE6, lonE6]
+//   selection [id, line, stopCode, stopName, destination, latE6, lonE6, operatorId]
 //   arrival   [selectionId, status, [epoch, ...]]
 module Store {
     const K_SELECTIONS = "sel";
@@ -21,6 +21,7 @@ module Store {
     const S_DEST = 4;
     const S_LAT = 5;
     const S_LON = 6;
+    const S_OP = 7;
     const A_ID = 0;
     const A_STATUS = 1;
     const A_TIMES = 2;

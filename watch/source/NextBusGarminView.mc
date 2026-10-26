@@ -48,11 +48,19 @@ class NextBusGarminView extends WatchUi.View {
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
 
-        // Line number.
+        // Operator badge + line number, centred as a group.
         var line = sel[Store.S_LINE] as String;
+        var lineFont = Format.isNumeric(line) ? Graphics.FONT_NUMBER_HOT : Graphics.FONT_LARGE;
+        var lineY = h * 25 / 100;
+        var badgeH = h * 10 / 100;
+        var badgeW = Operators.badgeWidth(sel[Store.S_OP] as Number, badgeH);
+        var gap = badgeW > 0 ? w * 3 / 100 : 0;
+        var textW = dc.getTextWidthInPixels(line, lineFont);
+        var startX = (w - (badgeW + gap + textW)) / 2;
+        Operators.drawBadge(dc, sel[Store.S_OP] as Number, startX, lineY - badgeH / 2, badgeH);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, h * 25 / 100, Format.isNumeric(line) ? Graphics.FONT_NUMBER_HOT : Graphics.FONT_LARGE,
-            line, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(startX + badgeW + gap, lineY, lineFont, line,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // Stop name.
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);

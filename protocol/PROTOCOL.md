@@ -21,7 +21,7 @@ type. So the encoded bytes travel as a flat list of integers:
 Implemented by `Transport` (Kotlin) and `Proto.pack/unpack` (Monkey C). When all
 targets reach API 6.0.0 this can be replaced by sending the raw bytes.
 
-Sizes (bytes, see `ProtocolTest`): 10 selections 727 (243 ints), arrivals for 10
+Sizes (bytes, see `ProtocolTest`): 10 selections 747 (249 ints), arrivals for 10
 selections 241 (81 ints). The per-message limit of Connect IQ is undocumented
 and must be measured on a device; messages are small by design (max 10
 selections, max 3 arrivals each).

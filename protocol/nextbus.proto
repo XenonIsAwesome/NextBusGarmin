@@ -44,6 +44,7 @@ message Selection {
   string destination = 5;  // English headsign
   sint32 lat_e6 = 6;       // microdegrees
   sint32 lon_e6 = 7;
+  uint32 operator_id = 8;  // curlbus/Ministry operator id (e.g. 3 Egged, 5 Dan, 15 Metropoline); 0 = unknown
 }
 
 // phone -> watch. Replaces the watch's selection list.

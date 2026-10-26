@@ -1,6 +1,10 @@
 package app.nextbus.garmin
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import com.garmin.android.connectiq.exception.InvalidStateException
 import app.nextbus.core.SendResult
 import app.nextbus.core.WatchLink
 import com.garmin.android.connectiq.ConnectIQ
@@ -48,15 +52,20 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
     var onWatchConnected: (() -> Unit)? = null
 
     private val app = IQApp(appId)
+    private val main = Handler(Looper.getMainLooper())
     private var sdk: ConnectIQ? = null
     private val devices = LinkedHashMap<Long, IQDevice>()
     private val connected = HashSet<Long>()
 
+    private var tethered = false
+
     fun start(tethered: Boolean) {
+        this.tethered = tethered
         val s = ConnectIQ.getInstance(context, if (tethered) IQConnectType.TETHERED else IQConnectType.WIRELESS)
         sdk = s
         s.initialize(context, false, object : ConnectIQListener {
-            override fun onSdkReady() = discover()
+            // In simulator (TETHERED) mode the SDK reports ready slightly before it accepts calls.
+            override fun onSdkReady() { main.postDelayed({ discover(0) }, 200) }
             override fun onInitializeError(status: IQSdkErrorStatus) {
                 _state.update {
                     it.copy(
@@ -80,12 +89,13 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
         runCatching { sdk?.unregisterAllForEvents() }
         runCatching { sdk?.shutdown(context) }
         sdk = null
+        main.removeCallbacksAndMessages(null)
         devices.clear()
         connected.clear()
         _state.value = State()
     }
 
-    private fun discover() {
+    private fun discover(attempt: Int) {
         val s = sdk ?: return
         try {
             val known = s.knownDevices.orEmpty() + s.connectedDevices.orEmpty()
@@ -98,6 +108,7 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
                 s.registerForDeviceEvents(d, IQDeviceEventListener { device, status -> onStatus(device, status) })
                 onStatus(d, s.getDeviceStatus(d))
                 s.registerForAppEvents(d, app, IQApplicationEventListener { _, _, data, status ->
+                    Log.d(TAG, "watch message: status=$status size=${data?.size}")
                     if (status == IQMessageStatus.SUCCESS) toInts(data)?.let { onMessage?.invoke(it) }
                 })
                 s.getApplicationInfo(app.applicationId, d, object : IQApplicationInfoListener {
@@ -111,6 +122,11 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
                 })
             }
             _state.update { it.copy(ready = true, problem = null) }
+        } catch (e: InvalidStateException) {
+            // Tethered: the simulator may be started after the app, so keep trying quietly.
+            if (tethered) main.postDelayed({ discover(attempt + 1) }, 2000)
+            else if (attempt < 5) main.postDelayed({ discover(attempt + 1) }, 500)
+            else _state.update { it.copy(problem = "Garmin Connect IQ error: ${e.message}") }
         } catch (e: Exception) {
             _state.update { it.copy(problem = "Garmin Connect IQ error: ${e.message}") }
         }
@@ -133,10 +149,14 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
     override suspend fun send(message: List<Int>): SendResult = withContext(Dispatchers.Main) {
         val s = sdk
         val d = activeDevice()
-        if (s == null || d == null || d.deviceIdentifier !in connected) return@withContext SendResult.FAILED
+        if (s == null || d == null || d.deviceIdentifier !in connected) {
+            Log.w(TAG, "send: no connected watch (sdk=${s != null}, device=${d?.friendlyName}, connected=$connected)")
+            return@withContext SendResult.FAILED
+        }
         suspendCancellableCoroutine { cont ->
             try {
                 s.sendMessage(d, app, message) { _, _, status ->
+                    if (status != IQMessageStatus.SUCCESS) Log.w(TAG, "send: status $status")
                     if (cont.isActive) {
                         cont.resume(
                             when (status) {
@@ -148,12 +168,15 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
                     }
                 }
             } catch (e: Exception) {
+                Log.w(TAG, "send failed", e)
                 if (cont.isActive) cont.resume(SendResult.FAILED)
             }
         }
     }
 
     companion object {
+        private const val TAG = "GarminLink"
+
         /**
          * The SDK hands a Monkey C Array over as a List. Some versions wrap the payload in one more
          * list; unwrap that. Returns null if any element is not a number.

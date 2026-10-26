@@ -28,5 +28,6 @@ Done. Add this to ~/.bashrc (or export it before running Gradle / the emulator):
   export ANDROID_HOME=$ANDROID_HOME
   export PATH=\$PATH:\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/emulator
 
-Start the emulator:   \$ANDROID_HOME/emulator/emulator -avd nextbus
+Start the emulator:   \$ANDROID_HOME/emulator/emulator -avd nextbus -gpu swiftshader_indirect
+  (software GL: when the Connect IQ simulator runs on the same GPU, the hardware-GL emulator can crash)
 EOF

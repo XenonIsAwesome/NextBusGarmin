@@ -59,6 +59,13 @@ val VECTORS: List<Vector> = listOf(
         "[1,1,1,\"1.0.0\"]",
     ),
     Vector(
+        "hello_watch",
+        Envelope.newBuilder().setHello(
+            Hello.newBuilder().setProtocolVersion(Transport.PROTOCOL_VERSION).setRole(Role.WATCH).setAppVersion("1.0.0"),
+        ).build(),
+        "[1,1,2,\"1.0.0\"]",
+    ),
+    Vector(
         "hello_watch_future_version",
         Envelope.newBuilder().setHello(
             Hello.newBuilder().setProtocolVersion(300).setRole(Role.WATCH).setAppVersion("2.10.3"),

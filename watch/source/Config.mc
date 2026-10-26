@@ -9,6 +9,15 @@ module Config {
     const WATCH_POLL_SECONDS = 40;
     // Selections the watch will keep (phone caps SelectionsSync to the same number).
     const MAX_SELECTIONS = 10;
+    // The app declares "phone app not responding" when a request has had no
+    // reply for this long.
+    const REPLY_TIMEOUT_SECONDS = 15;
+    // Data older than this is shown as stale even if the phone said OK.
+    const STALE_AFTER_SECONDS = 120;
+    // Simulator / no-phone development: answer requests from FakePhone instead
+    // of the Mobile SDK link. MUST be false for a real build.
+    const FAKE_PHONE = true;
+    const APP_VERSION = "0.1.0";
     // Relevance: walking speed (m/s), buffer added to the walk (s), and the
     // distance beyond which a selection is deprioritised (m).
     const WALK_SPEED_MPS = 1.3;

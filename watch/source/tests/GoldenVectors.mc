@@ -13,6 +13,14 @@ module GoldenVectors {
         }) as ByteArray;
     }
 
+    function bytesEqual(a as ByteArray, b as ByteArray) as Boolean {
+        if (a.size() != b.size()) { return false; }
+        for (var i = 0; i < a.size(); i++) {
+            if (a[i] != b[i]) { return false; }
+        }
+        return true;
+    }
+
     function same(a, b) as Boolean {
         if (a instanceof Array) {
             if (!(b instanceof Array) || a.size() != b.size()) { return false; }
@@ -46,6 +54,19 @@ function testGolden_hello_phone(logger as Test.Logger) as Boolean {
         "0a0b080110011a05312e302e30",
         [13, 658184, 69633, 1705265, 3026990, 3145728],
         [1, 1, 1, "1.0.0"]);
+}
+
+(:test)
+function testEncode_hello_watch(logger as Test.Logger) as Boolean {
+    return GoldenVectors.bytesEqual(Proto.encodeHello("1.0.0"), GoldenVectors.hexBytes("0a0b080110021a05312e302e30"));
+}
+
+(:test)
+function testGolden_hello_watch(logger as Test.Logger) as Boolean {
+    return GoldenVectors.check(logger, "hello_watch",
+        "0a0b080110021a05312e302e30",
+        [13, 658184, 69634, 1705265, 3026990, 3145728],
+        [1, 1, 2, "1.0.0"]);
 }
 
 (:test)
@@ -105,11 +126,21 @@ function testGolden_arrivals_10(logger as Test.Logger) as Boolean {
 }
 
 (:test)
+function testEncode_refresh_all_app_opened(logger as Test.Logger) as Boolean {
+    return GoldenVectors.bytesEqual(Proto.encodeRefresh([] as Array<Number>, 1), GoldenVectors.hexBytes("220408011801"));
+}
+
+(:test)
 function testGolden_refresh_all_app_opened(logger as Test.Logger) as Boolean {
     return GoldenVectors.check(logger, "refresh_all_app_opened",
         "220408011801",
         [6, 2229256, 71681],
         [4, 1, [], 1]);
+}
+
+(:test)
+function testEncode_refresh_some_timer(logger as Test.Logger) as Boolean {
+    return GoldenVectors.bytesEqual(Proto.encodeRefresh([1, 3, 200] as Array<Number>, 2), GoldenVectors.hexBytes("220a080112040103c8011802"));
 }
 
 (:test)

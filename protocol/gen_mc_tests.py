@@ -29,6 +29,12 @@ def render():
            "            :fromRepresentation => StringUtil.REPRESENTATION_STRING_HEX,",
            "            :toRepresentation => StringUtil.REPRESENTATION_BYTE_ARRAY",
            "        }) as ByteArray;", "    }", "",
+           "    function bytesEqual(a as ByteArray, b as ByteArray) as Boolean {",
+           "        if (a.size() != b.size()) { return false; }",
+           "        for (var i = 0; i < a.size(); i++) {",
+           "            if (a[i] != b[i]) { return false; }",
+           "        }",
+           "        return true;", "    }", "",
            "    function same(a, b) as Boolean {",
            "        if (a instanceof Array) {",
            "            if (!(b instanceof Array) || a.size() != b.size()) { return false; }",
@@ -49,6 +55,17 @@ def render():
            "            return false;", "        }",
            "        return true;", "    }", "}", ""]
     for v in data["vectors"]:
+        e = v["expected"]
+        # Messages the watch sends must encode to exactly the Kotlin bytes.
+        if e[0] == 4 and e[1] == 1:
+            enc = f"Proto.encodeRefresh({lit(e[2])} as Array<Number>, {e[3]})"
+        elif e[0] == 1 and e[1] == 1 and e[2] == 2:
+            enc = f"Proto.encodeHello({lit(e[3])})"
+        else:
+            enc = None
+        if enc:
+            out += ["(:test)", f"function testEncode_{v['name']}(logger as Test.Logger) as Boolean {{",
+                    f"    return GoldenVectors.bytesEqual({enc}, GoldenVectors.hexBytes(\"{v['hex']}\"));", "}", ""]
         out += ["(:test)", f"function testGolden_{v['name']}(logger as Test.Logger) as Boolean {{",
                 f"    return GoldenVectors.check(logger, \"{v['name']}\",",
                 f"        \"{v['hex']}\",", f"        {lit(v['transport'])},",

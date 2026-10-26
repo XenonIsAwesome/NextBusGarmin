@@ -146,7 +146,9 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
     private fun activeDevice(): IQDevice? =
         devices.values.firstOrNull { it.deviceIdentifier in connected } ?: devices.values.firstOrNull()
 
-    override suspend fun send(message: List<Int>): SendResult = withContext(Dispatchers.Main) {
+    // The tethered (simulator) strategy writes to a socket on the calling thread, which Android
+    // forbids on the main thread; the Garmin Connect path is a binder call and does not mind.
+    override suspend fun send(message: List<Int>): SendResult = withContext(if (tethered) Dispatchers.IO else Dispatchers.Main) {
         val s = sdk
         val d = activeDevice()
         if (s == null || d == null || d.deviceIdentifier !in connected) {

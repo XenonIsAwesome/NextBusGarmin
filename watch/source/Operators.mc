@@ -36,6 +36,12 @@ module Operators {
         return null;
     }
 
+    // The operator's colour (used for the line number), white if unknown.
+    function color(id as Number) as Number {
+        var row = find(id);
+        return row == null ? Graphics.COLOR_WHITE : row[2] as Number;
+    }
+
     var _logoId as Number = -1;
     var _logo as WatchUi.BitmapResource? = null;
 

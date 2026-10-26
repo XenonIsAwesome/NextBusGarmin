@@ -58,7 +58,7 @@ class NextBusGarminView extends WatchUi.View {
         var textW = dc.getTextWidthInPixels(line, lineFont);
         var startX = (w - (badgeW + gap + textW)) / 2;
         Operators.drawBadge(dc, sel[Store.S_OP] as Number, startX, lineY - badgeH / 2, badgeH);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Operators.color(sel[Store.S_OP] as Number), Graphics.COLOR_TRANSPARENT);
         dc.drawText(startX + badgeW + gap, lineY, lineFont, line,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 

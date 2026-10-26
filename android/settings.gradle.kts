@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 
 include(":protocol")
 include(":core")
+include(":app")

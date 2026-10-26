@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">אוטובוס הבא</string>
+
+    <string name="relay_channel">גשר לשעון</string>
+    <string name="relay_notification_title">אוטובוס הבא משרת את השעון שלך</string>
+    <string name="relay_notification_text">מעביר זמני אוטובוסים חיים לשעון כשהאפליקציה בשעון פתוחה</string>
+    <string name="relay_stop">עצור</string>
+
+    <string name="status_title">שעון</string>
+    <string name="watch_connected">מחובר: %1$s</string>
+    <string name="watch_not_connected">השעון לא מחובר</string>
+    <string name="watch_app_missing">האפליקציה לא מותקנת בשעון</string>
+    <string name="relay_label">להשאיר את הגשר פועל</string>
+    <string name="relay_off">הגשר כבוי: השעון לא יכול לקבל זמני אוטובוסים</string>
+    <string name="last_sent">בחירות שנשלחו לשעון</string>
+    <string name="last_data">נתוני אוטובוסים אחרונים</string>
+    <string name="last_message">בקשה אחרונה מהשעון</string>
+    <string name="never">אף פעם</string>
+    <string name="error_prefix">בעיה: %1$s</string>
+    <string name="mismatch_phone_old">האפליקציה בשעון חדשה יותר. יש לעדכן את האפליקציה בטלפון.</string>
+    <string name="mismatch_watch_old">האפליקציה בשעון ישנה יותר. יש לעדכן את האפליקציה בשעון.</string>
+    <string name="open_play_store">פתח את חנות Play</string>
+    <string name="simulator_mode">מצב סימולטור (adb)</string>
+    <string name="simulator_mode_hint">לפיתוח: התחברות לסימולטור Connect IQ במקום Garmin Connect. נכנס לתוקף בהפעלה מחדש של הגשר.</string>
+
+    <string name="index_label">מאגר תחנות: %1$s (%2$d תחנות)</string>
+    <string name="index_check">בדוק עדכון</string>
+    <string name="index_not_configured">עדכוני מאגר לא מוגדרים בגרסה זו</string>
+    <string name="index_up_to_date">המאגר מעודכן</string>
+    <string name="index_updated">המאגר עודכן ל-%1$s</string>
+    <string name="index_failed">עדכון המאגר נכשל: %1$s</string>
+
+    <string name="selections_title">בחירות בשעון</string>
+    <string name="capacity">%1$d מתוך %2$d בשעון</string>
+    <string name="empty_selections">עדיין ריק. הוסף קו בתחנה.</string>
+    <string name="add">הוסף</string>
+    <string name="move_up">הזז למעלה</string>
+    <string name="move_down">הזז למטה</string>
+    <string name="remove">הסר</string>
+    <string name="name_guess">השם באנגלית הוא ניחוש. הקש כדי לתקן.</string>
+    <string name="edit_name_title">שם התחנה בשעון</string>
+    <string name="edit_name_hint">באנגלית בלבד</string>
+    <string name="save">שמור</string>
+    <string name="cancel">ביטול</string>
+
+    <string name="add_title">הוספת תחנה</string>
+    <string name="search_hint">שם תחנה או מספר (עברית או אנגלית)</string>
+    <string name="near_me">תחנות לידי</string>
+    <string name="location_denied">הרשאת המיקום נדחתה</string>
+    <string name="location_unavailable">לא ניתן לקבוע את מיקומך</string>
+    <string name="no_results">לא נמצאו תחנות</string>
+    <string name="meters">%1$d מ׳</string>
+    <string name="lines_title">קווים ב%1$s</string>
+    <string name="no_lines">אין קווים לתפוס בתחנה זו</string>
+    <string name="stop_code_fmt">תחנה %1$s</string>
+    <string name="to_dest">לכיוון %1$s</string>
+    <string name="added">נוסף</string>
+    <string name="duplicate">כבר נוסף</string>
+    <string name="full">בשעון יש מקום ל-%1$d בחירות. הסר אחת קודם.</string>
+    <string name="back">חזרה</string>
+</resources>

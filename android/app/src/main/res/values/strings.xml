@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Next Bus</string>
+
+    <string name="relay_channel">Watch relay</string>
+    <string name="relay_notification_title">Next Bus is serving your watch</string>
+    <string name="relay_notification_text">Keeps live bus times flowing to the watch while its app is open</string>
+    <string name="relay_stop">Stop</string>
+
+    <string name="status_title">Watch</string>
+    <string name="watch_connected">Connected: %1$s</string>
+    <string name="watch_not_connected">Watch not connected</string>
+    <string name="watch_app_missing">The Next Bus app is not installed on the watch</string>
+    <string name="relay_label">Keep relay running</string>
+    <string name="relay_off">Relay is off: the watch cannot get bus times</string>
+    <string name="last_sent">Selections sent to watch</string>
+    <string name="last_data">Last bus data</string>
+    <string name="last_message">Last request from watch</string>
+    <string name="never">never</string>
+    <string name="error_prefix">Problem: %1$s</string>
+    <string name="mismatch_phone_old">The watch app is newer than this app. Update this phone app.</string>
+    <string name="mismatch_watch_old">The watch app is older than this app. Update the watch app.</string>
+    <string name="open_play_store">Open Play Store</string>
+    <string name="simulator_mode">Simulator mode (adb)</string>
+    <string name="simulator_mode_hint">Debug: talk to the Connect IQ simulator instead of Garmin Connect. Applies when the relay restarts.</string>
+
+    <string name="index_label">Stop index: %1$s (%2$d stops)</string>
+    <string name="index_check">Check for update</string>
+    <string name="index_not_configured">Index updates are not set up for this build</string>
+    <string name="index_up_to_date">The index is up to date</string>
+    <string name="index_updated">Index updated to %1$s</string>
+    <string name="index_failed">Index update failed: %1$s</string>
+
+    <string name="selections_title">Watch selections</string>
+    <string name="capacity">%1$d of %2$d on the watch</string>
+    <string name="empty_selections">Nothing yet. Add a bus line at a stop.</string>
+    <string name="add">Add</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="remove">Remove</string>
+    <string name="name_guess">English name is a guess. Tap to fix it.</string>
+    <string name="edit_name_title">Stop name on the watch</string>
+    <string name="edit_name_hint">English only</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="add_title">Add a stop</string>
+    <string name="search_hint">Stop name or number (Hebrew or English)</string>
+    <string name="near_me">Stops near me</string>
+    <string name="location_denied">Location permission was denied</string>
+    <string name="location_unavailable">Could not get your location</string>
+    <string name="no_results">No stops found</string>
+    <string name="meters">%1$d m</string>
+    <string name="lines_title">Lines at %1$s</string>
+    <string name="no_lines">No lines to catch at this stop</string>
+    <string name="stop_code_fmt">Stop %1$s</string>
+    <string name="to_dest">to %1$s</string>
+    <string name="added">Added</string>
+    <string name="duplicate">Already added</string>
+    <string name="full">The watch holds %1$d selections. Remove one first.</string>
+    <string name="back">Back</string>
+</resources>

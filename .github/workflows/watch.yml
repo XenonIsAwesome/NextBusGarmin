@@ -85,7 +85,7 @@ jobs:
         run: |
           mkdir -p out
           for d in fr165 fr165m fr255 fr255m fr255s fr255sm; do
-            monkeyc -d "$d" -f monkey.jungle -o "out/nextbus-$d.prg" -y "$RUNNER_TEMP/developer_key" -w -l 3 -r
+            monkeyc -d "$d" -f monkey.jungle -o "out/nextbus-$d.prg" -y "$RUNNER_TEMP/developer_key" -w -r
           done
           ls -l out
 
@@ -99,7 +99,7 @@ jobs:
       # updates must be signed with the same key as the first upload.
       - name: Export Connect IQ Store package
         if: steps.key.outputs.real == 'true'
-        run: monkeyc -e -f monkey.jungle -o out/nextbus.iq -y "$RUNNER_TEMP/developer_key" -w -l 3 -r
+        run: monkeyc -e -f monkey.jungle -o out/nextbus.iq -y "$RUNNER_TEMP/developer_key" -w -r
 
       - uses: actions/upload-artifact@v4
         if: steps.key.outputs.real == 'true'

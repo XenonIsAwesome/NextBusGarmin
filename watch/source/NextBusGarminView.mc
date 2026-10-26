@@ -1,20 +1,68 @@
 import Toybox.Graphics;
 import Toybox.Lang;
+import Toybox.Timer;
 import Toybox.WatchUi;
 
 // One selection per page: line number, stop name, next arrivals in minutes,
 // and a footer saying how old the data is.
 class NextBusGarminView extends WatchUi.View {
+    // Stop-name marquee: hold at the start, scroll left at SCROLL_STEP px per
+    // SCROLL_TICK_MS, hold at the end, then jump back.
+    const SCROLL_TICK_MS = 120;
+    const SCROLL_STEP = 3;
+    const SCROLL_HOLD_TICKS = 10;
+
     var _page as Number = 0;
+    var _animTimer as Timer.Timer? = null;
+    var _scroll as Number = 0;       // px the name is scrolled left
+    var _overflow as Number = 0;     // px the current name is wider than its box (0 = fits)
+    var _hold as Number = SCROLL_HOLD_TICKS;
 
     function initialize() {
         View.initialize();
+    }
+
+    function onShow() as Void {
+        _animTimer = new Timer.Timer();
+        _animTimer.start(method(:onScrollTick), SCROLL_TICK_MS, true);
+    }
+
+    function onHide() as Void {
+        if (_animTimer != null) {
+            _animTimer.stop();
+            _animTimer = null;
+        }
+    }
+
+    function resetScroll() as Void {
+        _scroll = 0;
+        _hold = SCROLL_HOLD_TICKS;
+    }
+
+    function onScrollTick() as Void {
+        if (_overflow <= 0) {
+            return;
+        }
+        if (_hold > 0) {
+            _hold--;
+            if (_hold == 0 && _scroll >= _overflow) {
+                resetScroll();
+            }
+        } else {
+            _scroll += SCROLL_STEP;
+            if (_scroll >= _overflow) {
+                _scroll = _overflow;
+                _hold = SCROLL_HOLD_TICKS;
+            }
+        }
+        WatchUi.requestUpdate();
     }
 
     function movePage(delta as Number) as Void {
         var n = Store.selections.size();
         if (n > 0) {
             _page = (_page + delta + n) % n;
+            resetScroll();
             WatchUi.requestUpdate();
         }
     }
@@ -65,14 +113,32 @@ class NextBusGarminView extends WatchUi.View {
         dc.drawText(startX + badgeW + gap, lineY, lineFont, line,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
-        // Stop name.
+        // Stop name: centred if it fits, otherwise a marquee clipped to its box.
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, h * 44 / 100, Graphics.FONT_TINY,
-            fit(dc, sel[Store.S_NAME] as String, Graphics.FONT_TINY, w * 78 / 100),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        drawStopName(dc, sel[Store.S_NAME] as String, h * 44 / 100, w * 78 / 100);
 
         drawArrivals(dc, sel, now);
         drawFooter(dc, sel, now);
+    }
+
+    function drawStopName(dc as Dc, name as String, y as Number, boxW as Number) as Void {
+        var font = Graphics.FONT_TINY;
+        var textW = dc.getTextWidthInPixels(name, font);
+        var cx = dc.getWidth() / 2;
+        if (textW <= boxW) {
+            _overflow = 0;
+            dc.drawText(cx, y, font, name, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            return;
+        }
+        if (_overflow != textW - boxW) {
+            _overflow = textW - boxW;
+            resetScroll();
+        }
+        var fh = dc.getFontHeight(font);
+        var left = cx - boxW / 2;
+        dc.setClip(left, y - fh / 2, boxW, fh);
+        dc.drawText(left - _scroll, y, font, name, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.clearClip();
     }
 
     function drawArrivals(dc as Dc, sel as Array, now as Number) as Void {

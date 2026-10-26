@@ -65,7 +65,7 @@ and never talks to the phone (used for demos and screenshots).
 **Index, then Android**
 ```
 python3 tools/gtfs-index/build_index.py         # writes android/app/src/main/assets/index.db (build fails without it)
-cd android && ./gradlew test                    # 47 unit tests
+cd android && ./gradlew test                    # 61 unit tests
 ./gradlew :app:installDebug
 ./gradlew :protocol:generateVectors && ../protocol/check.sh    # after any protocol change
 ```
@@ -76,6 +76,10 @@ run), then set `INDEX_MANIFEST_URL` to
 **Phone + simulator (development):** start the emulator with `-gpu swiftshader_indirect`; enable
 "Simulator mode (adb)" in the app; `adb forward tcp:7381 tcp:7381`; start the Connect IQ simulator
 (`connectiq-launch`), load the watch app **first**, then *adb Connection → Start*. See limits below.
+
+**Phone without a watch (debug builds):** Home → *Mock watch* switch, then *Open app*. A software model of the watch
+(`MockWatch` in `android/core`, also used by the unit tests) talks to the real relay service and shows what the
+watch would display. No Garmin Connect, no simulator.
 
 ## Manual test checklist (real device unless stated)
 1. Install the watch app (`.prg` sideload, or Connect IQ Store) and the phone app; pair in Garmin Connect.

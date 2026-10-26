@@ -2,7 +2,7 @@
 
 ## Verified by automated tests (no device)
 - Protocol: Kotlin encoder, golden vectors and generated Monkey C tests agree (`protocol/check.sh`).
-- Android `core` + `protocol`: 47 unit tests (curlbus parsing on real fixtures, converter, provider, 40 s rate
+- Android `core` + `protocol`: 61 unit tests, incl. 12 scenario tests against a `MockWatch` (a model of the watch app's protocol behaviour; real provider/parser/coordinator/engine, captured curlbus responses, simulated clock): open app, 40 s polling and rate limit, closed app = no traffic, countdown between fetches, selection edits, curlbus down/recovery/stale, invalid stop, TOO_LARGE, reconnect, old watch version, no service. Earlier coverage: 47 unit tests (curlbus parsing on real fixtures, converter, provider, 40 s rate
   limiter and backoff, relay engine incl. TOO_LARGE retry, index updater checksum/schema, geo).
 - Watch: 26 Monkey Unit tests on fr255 (formatting, relevance, protocol vectors); all six devices compile.
 - GTFS index: built from the live Ministry GTFS (29,858 stops, 6,591 routes) and cross-checked against live curlbus
@@ -15,6 +15,10 @@
   Hebrew strings.
 - **Phone → watch over the simulator link:** the relay connected to the simulator over adb and the watch app
   displayed the selection sent by the phone (SelectionsSync).
+
+- **Mock watch on the emulator (debug build, Home → "Mock watch"):** the real relay service with live curlbus and the
+  modelled watch: Open app → Hello, SelectionsSync and ArrivalsUpdate flowed, the mock watch showed "100 · 10 min · OK",
+  and five rapid Refresh presses caused no extra fetch (status card "Last bus data" unchanged).
 
 ## Not verified / needs a real device
 - **Watch → phone and the full loop in the simulator.** The Connect IQ simulator (9.2.0, Linux) segfaulted

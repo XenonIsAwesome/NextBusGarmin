@@ -58,4 +58,10 @@
     <string name="duplicate">כבר נוסף</string>
     <string name="full">בשעון יש מקום ל-%1$d בחירות. הסר אחת קודם.</string>
     <string name="back">חזרה</string>
+    <string name="mock_watch">שעון מדומה</string>
+    <string name="mock_watch_hint">לפיתוח: מודל תוכנה של אפליקציית השעון במקום שעון אמיתי. נכנס לתוקף בהפעלה מחדש של הגשר.</string>
+    <string name="mock_open">פתח אפליקציה</string>
+    <string name="mock_refresh">רענן</string>
+    <string name="mock_close">סגור</string>
+    <string name="mock_no_rows">אין עדיין נתונים בשעון המדומה: פתח את האפליקציה שלו.</string>
 </resources>

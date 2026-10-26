@@ -58,4 +58,10 @@
     <string name="duplicate">Already added</string>
     <string name="full">The watch holds %1$d selections. Remove one first.</string>
     <string name="back">Back</string>
+    <string name="mock_watch">Mock watch</string>
+    <string name="mock_watch_hint">Debug: a software model of the watch app stands in for a real watch. Applies when the relay restarts.</string>
+    <string name="mock_open">Open app</string>
+    <string name="mock_refresh">Refresh</string>
+    <string name="mock_close">Close</string>
+    <string name="mock_no_rows">Nothing on the mock watch yet: open its app.</string>
 </resources>

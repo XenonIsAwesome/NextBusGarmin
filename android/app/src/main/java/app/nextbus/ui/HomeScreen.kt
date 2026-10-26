@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.nextbus.BuildConfig
 import app.nextbus.MainViewModel
+import app.nextbus.MockWatchHub
 import app.nextbus.R
 import app.nextbus.RelayStatus
 import app.nextbus.core.NextBusConfig
@@ -187,6 +188,42 @@ private fun StatusCard(vm: MainViewModel, status: RelayStatus, relayOn: Boolean)
                         Text(stringResource(R.string.simulator_mode_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Switch(tethered, { vm.setTethered(it) })
+                }
+                val mock by vm.mockWatch.collectAsState()
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(stringResource(R.string.mock_watch))
+                        Text(stringResource(R.string.mock_watch_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Switch(mock, { vm.setMockWatch(it) })
+                }
+                if (mock) MockWatchCard()
+            }
+        }
+    }
+}
+
+/** Debug: what the modelled watch app shows, with buttons for what a user does on the watch. */
+@Composable
+private fun MockWatchCard() {
+    val st by MockWatchHub.state.collectAsState()
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(stringResource(R.string.mock_watch), style = MaterialTheme.typography.titleSmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { MockWatchHub.send(MockWatchHub.Command.OPEN) }, enabled = !st.open) { Text(stringResource(R.string.mock_open)) }
+                Button(onClick = { MockWatchHub.send(MockWatchHub.Command.REFRESH) }, enabled = st.open) { Text(stringResource(R.string.mock_refresh)) }
+                TextButton(onClick = { MockWatchHub.send(MockWatchHub.Command.CLOSE) }, enabled = st.open) { Text(stringResource(R.string.mock_close)) }
+            }
+            if (st.rows.isEmpty()) Text(stringResource(R.string.mock_no_rows), style = MaterialTheme.typography.bodySmall)
+            st.rows.forEach { r ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LineBadge(r.line, r.operatorId)
+                    Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
+                        Text(r.stopName, style = MaterialTheme.typography.bodyMedium)
+                        Text(r.status?.name ?: "-", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text(r.times.joinToString(" · ").ifEmpty { "-" }, style = MaterialTheme.typography.titleMedium)
                 }
             }
         }

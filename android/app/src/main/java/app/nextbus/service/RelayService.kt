@@ -19,6 +19,9 @@ import app.nextbus.R
 import app.nextbus.RelayStatusStore
 import app.nextbus.core.ArrivalCoordinator
 import app.nextbus.core.CurlbusProvider
+import app.nextbus.MockWatchHub
+import app.nextbus.core.MockWatch
+import app.nextbus.core.WatchLink
 import app.nextbus.core.RelayEngine
 import app.nextbus.core.RelayEvent
 import app.nextbus.core.SavedSelection
@@ -28,6 +31,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -67,12 +72,16 @@ class RelayService : Service() {
     @OptIn(FlowPreview::class)
     private fun startRelay() {
         val graph = (application as NextBusApp).graph
-        val garmin = GarminLink(this, BuildConfig.WATCH_APP_ID).also { link = it }
         val coordinator = ArrivalCoordinator(CurlbusProvider(), { System.currentTimeMillis() / 1000 })
+        val garmin = GarminLink(this, BuildConfig.WATCH_APP_ID).also { link = it }
+        var mock: MockWatch? = null
         val engine = RelayEngine(
             coordinator = coordinator,
             selections = { cachedSelections },
-            link = garmin,
+            link = object : WatchLink {
+                override suspend fun send(message: List<Int>) =
+                    mock?.send(message) ?: garmin.send(message)
+            },
             now = { System.currentTimeMillis() / 1000 },
             appVersion = BuildConfig.VERSION_NAME,
             onEvent = ::onEvent,
@@ -84,6 +93,7 @@ class RelayService : Service() {
 
         scope.launch {
             garmin.state.collect { s ->
+                if (mock != null) return@collect
                 RelayStatusStore.update {
                     it.copy(
                         linkProblem = s.problem, watchName = s.deviceName,
@@ -101,8 +111,34 @@ class RelayService : Service() {
             }
         }
         scope.launch {
+            if (BuildConfig.DEBUG && graph.settings.mockWatch.first()) {
+                val w = MockWatch({ System.currentTimeMillis() / 1000 }, { engine.onWatchMessage(it) }).also { mock = it }
+                runMockWatch(w)
+                return@launch
+            }
             val tethered = graph.settings.tethered.first()
             kotlinx.coroutines.withContext(Dispatchers.Main) { garmin.start(tethered) }
+        }
+    }
+
+    /** Debug: drive the modelled watch (open/close/refresh buttons, 40 s timer) and publish what it shows. */
+    private suspend fun runMockWatch(w: MockWatch) = coroutineScope {
+        RelayStatusStore.update { it.copy(watchName = "Mock watch", watchConnected = true, watchAppInstalled = true) }
+        fun publish() = MockWatchHub.publish(MockWatchHub.State(w.open, w.view(), w.generatedAt))
+        launch {
+            MockWatchHub.commands.collect {
+                when (it) {
+                    MockWatchHub.Command.OPEN -> { w.openApp(); w.tick() }
+                    MockWatchHub.Command.CLOSE -> w.closeApp()
+                    MockWatchHub.Command.REFRESH -> w.refresh()
+                }
+                publish()
+            }
+        }
+        while (true) {
+            w.tick()
+            publish()
+            delay(1000)
         }
     }
 
@@ -146,6 +182,7 @@ class RelayService : Service() {
     override fun onDestroy() {
         scope.cancel()
         link?.stop()
+        MockWatchHub.publish(MockWatchHub.State())
         RelayStatusStore.reset()
         super.onDestroy()
     }

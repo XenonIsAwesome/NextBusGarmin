@@ -26,6 +26,7 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
         graph.selections.selections.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val relayEnabled: StateFlow<Boolean> = graph.settings.relayEnabled.stateIn(viewModelScope, SharingStarted.Eagerly, true)
     val tethered: StateFlow<Boolean> = graph.settings.tethered.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val mockWatch: StateFlow<Boolean> = graph.settings.mockWatch.stateIn(viewModelScope, SharingStarted.Eagerly, false)
     val status: StateFlow<RelayStatus> = RelayStatusStore.status
 
     val indexInfo = MutableStateFlow<IndexInfo?>(null)
@@ -47,6 +48,14 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
 
     fun setTethered(on: Boolean) = viewModelScope.launch {
         graph.settings.setTethered(on)
+        if (relayEnabled.value) {
+            RelayService.stop(app)
+            RelayService.start(app)
+        }
+    }
+
+    fun setMockWatch(on: Boolean) = viewModelScope.launch {
+        graph.settings.setMockWatch(on)
         if (relayEnabled.value) {
             RelayService.stop(app)
             RelayService.start(app)

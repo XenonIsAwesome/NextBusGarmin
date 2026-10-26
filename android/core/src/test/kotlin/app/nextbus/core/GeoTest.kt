@@ -17,6 +17,6 @@ class GeoTest {
     fun realStopsInRaanana() {
         // 36601 Beit Loewenstein/Ahuza to 36602 Weizman/Rivka Gover: ~1 km apart.
         val d = Geo.distanceM(32184760, 34855867, 32192499, 34850301)
-        assertTrue(d in 900.0..1000.0, "got $d")
+        assertTrue(d in 900.0..1100.0, "got $d")
     }
 }

@@ -1,0 +1,40 @@
+# Publishes a GitHub release when a version tag is pushed:  git tag v0.2.0 && git push origin v0.2.0
+# Attaches the Android APK + AAB and the watch app (.prg per device, .iq when the developer key is set).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    uses: ./.github/workflows/watch.yml
+    secrets: inherit
+
+  android:
+    uses: ./.github/workflows/android.yml
+    secrets: inherit
+    with:
+      version: ${{ github.ref_name }}
+
+  publish:
+    needs: [watch, android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p release
+          cp artifacts/nextbus-android-*/nextbus.apk "release/nextbus-$TAG.apk"
+          cp artifacts/nextbus-android-*/nextbus.aab "release/nextbus-$TAG.aab"
+          (cd artifacts/nextbus-watch-prg && zip -q "../../release/nextbus-watch-$TAG-prg.zip" *.prg)
+          [ -f artifacts/nextbus-watch-iq/nextbus.iq ] && cp artifacts/nextbus-watch-iq/nextbus.iq "release/nextbus-watch-$TAG.iq" || true
+          gh release create "$TAG" release/* --repo "${{ github.repository }}" --title "$TAG" --generate-notes

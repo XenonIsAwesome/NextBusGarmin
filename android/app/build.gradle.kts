@@ -12,8 +12,9 @@ android {
         applicationId = "app.nextbus"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        // CI passes these from the release tag: -PversionName=1.2.3 -PversionCode=<run number>.
+        versionCode = (project.findProperty("versionCode") as String?)?.toInt() ?: 1
+        versionName = (project.findProperty("versionName") as String?) ?: "0.1.0"
 
         // The watch app's Connect IQ id (watch/manifest.xml). The store id is only needed to
         // offer "install the watch app" once the app is published.
@@ -26,6 +27,29 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    // Release signing comes from the environment (CI secrets or your shell); without it the release
+    // build is signed with the debug key, which installs fine but cannot be uploaded to Google Play.
+    //   NEXTBUS_KEYSTORE=/path/to/keystore.jks  NEXTBUS_KEYSTORE_PASSWORD  NEXTBUS_KEY_ALIAS  NEXTBUS_KEY_PASSWORD
+    signingConfigs {
+        val keystore = System.getenv("NEXTBUS_KEYSTORE")
+        if (!keystore.isNullOrBlank()) {
+            create("release") {
+                storeFile = file(keystore)
+                storePassword = System.getenv("NEXTBUS_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("NEXTBUS_KEY_ALIAS")
+                keyPassword = System.getenv("NEXTBUS_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            // Not minified: protobuf-lite reflection and the Garmin SDK have not been tested under R8.
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+        }
     }
 
     compileOptions {

@@ -81,6 +81,27 @@ run), then set `INDEX_MANIFEST_URL` to
 (`MockWatch` in `android/core`, also used by the unit tests) talks to the real relay service and shows what the
 watch would display. No Garmin Connect, no simulator.
 
+## CI and releases (`.github/workflows/`)
+| workflow | when | does |
+|---|---|---|
+| `index.yml` | nightly, manual | builds the stop index, publishes it to the `index-latest` release |
+| `watch.yml` | watch/protocol changes, manual | builds a `.prg` per device (and the `.iq` store package with the real key); forces `FAKE_PHONE = false` |
+| `android.yml` | android/protocol changes, manual | bundles the published index, drift check, unit tests, release APK + AAB |
+| `release.yml` | tag `v*` | runs both builds, attaches APK, AAB, watch `.prg` zip (and `.iq`) to a GitHub release |
+
+Release: `git tag v0.2.0 && git push origin v0.2.0`. The tag becomes the Android `versionName`; `versionCode` is the run number.
+
+Repository settings the workflows need:
+- **Watch:** secrets `GARMIN_USERNAME`, `GARMIN_PASSWORD`, variable `CIQ_AGREEMENT_HASH` (to download the Connect IQ SDK);
+  optional secret `GARMIN_DEVELOPER_KEY_BASE64` (your real key, required for the `.iq`; without it the `.prg` files
+  are signed with a throwaway key, fine for sideloading).
+- **Android (optional):** secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+  `ANDROID_KEY_PASSWORD`. Without them the APK/AAB are signed with the debug key: installable, not uploadable to Google Play.
+- Settings > Actions > General > Workflow permissions: read and write (index and release jobs create releases).
+
+The release APK is not minified (R8 untested with protobuf and the Garmin SDK). The AAB is the format Google Play takes;
+the APK is for sideloading. Local release build: `./gradlew assembleRelease bundleRelease` (signing via `NEXTBUS_KEYSTORE*` env vars).
+
 ## Manual test checklist (real device unless stated)
 1. Install the watch app (`.prg` sideload, or Connect IQ Store) and the phone app; pair in Garmin Connect.
 2. Phone: add 2-3 stops/lines; they appear in "Watch selections"; relay card says "Connected: <watch>".

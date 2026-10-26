@@ -27,6 +27,8 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
     val relayEnabled: StateFlow<Boolean> = graph.settings.relayEnabled.stateIn(viewModelScope, SharingStarted.Eagerly, true)
     val tethered: StateFlow<Boolean> = graph.settings.tethered.stateIn(viewModelScope, SharingStarted.Eagerly, false)
     val mockWatch: StateFlow<Boolean> = graph.settings.mockWatch.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    /** null until loaded; then the stored choice or null = follow the system. */
+    val darkMode: StateFlow<Boolean?> = graph.settings.darkMode.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     val status: StateFlow<RelayStatus> = RelayStatusStore.status
 
     val indexInfo = MutableStateFlow<IndexInfo?>(null)
@@ -45,6 +47,8 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
         graph.settings.setRelayEnabled(on)
         if (on) RelayService.start(app) else RelayService.stop(app)
     }
+
+    fun setDarkMode(on: Boolean) = viewModelScope.launch { graph.settings.setDarkMode(on) }
 
     fun setTethered(on: Boolean) = viewModelScope.launch {
         graph.settings.setTethered(on)

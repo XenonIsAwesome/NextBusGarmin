@@ -64,4 +64,5 @@
     <string name="mock_refresh">Refresh</string>
     <string name="mock_close">Close</string>
     <string name="mock_no_rows">Nothing on the mock watch yet: open its app.</string>
+    <string name="dark_mode">Dark</string>
 </resources>

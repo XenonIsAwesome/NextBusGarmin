@@ -3,6 +3,7 @@ package app.nextbus.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -65,7 +66,17 @@ fun HomeScreen(vm: MainViewModel, onAdd: () -> Unit) {
     var editing by remember { mutableStateOf<SavedSelection?>(null) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
+        topBar = {
+            val forced by vm.darkMode.collectAsState()
+            val dark = forced ?: isSystemInDarkTheme()
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    Text(stringResource(R.string.dark_mode), style = MaterialTheme.typography.labelLarge)
+                    Switch(dark, { vm.setDarkMode(it) }, Modifier.padding(horizontal = 12.dp))
+                },
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = onAdd, icon = { Icon(Icons.Default.Add, null) }, text = { Text(stringResource(R.string.add)) })
         },

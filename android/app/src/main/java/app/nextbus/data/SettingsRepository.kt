@@ -12,6 +12,7 @@ private val Context.settingsStore by preferencesDataStore("settings")
 class SettingsRepository(private val context: Context) {
     private val relayKey = booleanPreferencesKey("relay_enabled")
     private val tetheredKey = booleanPreferencesKey("tethered")
+    private val darkKey = booleanPreferencesKey("dark_mode")
     private val mockKey = booleanPreferencesKey("mock_watch")
 
     /** Keep the relay (foreground service) running so the watch can reach the phone app. */
@@ -24,6 +25,11 @@ class SettingsRepository(private val context: Context) {
     val mockWatch: Flow<Boolean> = context.settingsStore.data.map { it[mockKey] ?: false }
 
     suspend fun setMockWatch(v: Boolean) { context.settingsStore.edit { it[mockKey] = v } }
+    /** true/false = forced dark/light; null = follow the system. */
+    val darkMode: Flow<Boolean?> = context.settingsStore.data.map { it[darkKey] }
+
+    suspend fun setDarkMode(v: Boolean) { context.settingsStore.edit { it[darkKey] = v } }
+
     suspend fun setRelayEnabled(v: Boolean) { context.settingsStore.edit { it[relayKey] = v } }
     suspend fun setTethered(v: Boolean) { context.settingsStore.edit { it[tetheredKey] = v } }
 }

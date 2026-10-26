@@ -29,3 +29,14 @@ for screen, outdir in SIZES.items():
         im = im.resize((max(1, round(im.width * h / im.height)), h), Image.LANCZOS)
         im.save(os.path.join(path, name + ".png"), optimize=True)
         print(screen, name, im.size)
+
+# Phone app: one PNG per operator, 96 px high, as drawable-nodpi (shown at ~28 dp, so sharp up to 3.4x density).
+ANDROID_RES = os.path.join(ROOT, "android", "app", "src", "main", "res", "drawable-nodpi")
+os.makedirs(ANDROID_RES, exist_ok=True)
+for name in NAMES:
+    svg = os.path.join(ROOT, "tools", "logos", name + ".svg")
+    im = Image.open(io.BytesIO(bytes(resvg_py.svg_to_bytes(svg_path=svg, height=96 * 6)))).convert("RGBA")
+    im = im.crop(im.getbbox())
+    im = im.resize((max(1, round(im.width * 96 / im.height)), 96), Image.LANCZOS)
+    im.save(os.path.join(ANDROID_RES, "logo_" + name + ".png"), optimize=True)
+    print("android", name, im.size)

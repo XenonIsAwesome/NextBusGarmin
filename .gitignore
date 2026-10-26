@@ -5,3 +5,5 @@ build/
 *.iq
 local.properties
 .idea/
+tools/gtfs-index/cache/
+android/app/src/main/assets/index.db

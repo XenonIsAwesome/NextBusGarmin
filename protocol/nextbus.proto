@@ -1,0 +1,83 @@
+// Shared phone <-> watch protocol. Single source of truth: the watch codec
+// (watch/source/Proto.mc) and the Android codegen both follow this file.
+// Encoding rules, transport packing and versioning: protocol/PROTOCOL.md.
+syntax = "proto3";
+
+package nextbus;
+
+option java_package = "app.nextbus.protocol";
+option java_multiple_files = true;
+
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  PHONE = 1;
+  WATCH = 2;
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  OK = 1;
+  NO_SERVICE = 2;
+  ERROR = 3;
+  STALE = 4;
+}
+
+enum Reason {
+  REASON_UNSPECIFIED = 0;
+  APP_OPENED = 1;
+  TIMER = 2;
+  MANUAL = 3;
+}
+
+// Either direction. Handshake and mismatch detection.
+message Hello {
+  uint32 protocol_version = 1;
+  Role role = 2;
+  string app_version = 3;
+}
+
+message Selection {
+  uint32 id = 1;           // stable per selection, assigned by the phone
+  string line = 2;         // curlbus line_name, e.g. "29"
+  string stop_code = 3;
+  string stop_name = 4;    // short, English
+  string destination = 5;  // English headsign
+  sint32 lat_e6 = 6;       // microdegrees
+  sint32 lon_e6 = 7;
+}
+
+// phone -> watch. Replaces the watch's selection list.
+message SelectionsSync {
+  uint32 protocol_version = 1;
+  repeated Selection selections = 2;  // capped (MAX_SELECTIONS, default 10)
+}
+
+message SelectionArrivals {
+  uint32 selection_id = 1;
+  Status status = 2;
+  repeated uint32 arrival_times = 3;  // absolute epoch seconds, ascending, max 3
+}
+
+// phone -> watch.
+message ArrivalsUpdate {
+  uint32 protocol_version = 1;
+  uint32 generated_at = 2;  // epoch seconds
+  repeated SelectionArrivals items = 3;
+}
+
+// watch -> phone.
+message RefreshRequest {
+  uint32 protocol_version = 1;
+  repeated uint32 selection_ids = 2;  // empty = all
+  Reason reason = 3;
+}
+
+// The only thing sent on the wire; the oneof tells the receiver which message.
+message Envelope {
+  oneof body {
+    Hello hello = 1;
+    SelectionsSync selections_sync = 2;
+    ArrivalsUpdate arrivals_update = 3;
+    RefreshRequest refresh_request = 4;
+  }
+}

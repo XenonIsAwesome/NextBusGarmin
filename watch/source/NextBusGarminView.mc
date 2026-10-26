@@ -17,6 +17,10 @@ class NextBusGarminView extends WatchUi.View {
     var _scroll as Number = 0;       // px the name is scrolled left
     var _overflow as Number = 0;     // px the current name is wider than its box (0 = fits)
     var _hold as Number = SCROLL_HOLD_TICKS;
+    // Default page = the most relevant selection, chosen again whenever new data or a
+    // position arrives, until the user moves to another page.
+    var _userMoved as Boolean = false;
+    var _chosenFor as Number = -1;
 
     function initialize() {
         View.initialize();
@@ -58,9 +62,27 @@ class NextBusGarminView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
+    function invalidateChoice() as Void {
+        _chosenFor = -1;
+        WatchUi.requestUpdate();
+    }
+
+    function chooseDefaultPage() as Void {
+        if (_userMoved || _chosenFor == Store.generatedAt || Store.selections.size() == 0) {
+            return;
+        }
+        _chosenFor = Store.generatedAt;
+        var best = Relevance.pick(Store.selections, Store.arrivals, Pos.lastKnown(), Link.now());
+        if (best != null && _page != best[0]) {
+            _page = best[0] as Number;
+            resetScroll();
+        }
+    }
+
     function movePage(delta as Number) as Void {
         var n = Store.selections.size();
         if (n > 0) {
+            _userMoved = true;
             _page = (_page + delta + n) % n;
             resetScroll();
             WatchUi.requestUpdate();
@@ -83,6 +105,7 @@ class NextBusGarminView extends WatchUi.View {
             drawMessage(dc, "Open the phone app", healthText());
             return;
         }
+        chooseDefaultPage();
         if (_page >= n) {
             _page = 0;
         }

@@ -8,6 +8,7 @@ import Toybox.WatchUi;
 //
 //   selection [id, line, stopCode, stopName, destination, latE6, lonE6, operatorId]
 //   arrival   [selectionId, status, [epoch, ...]]
+(:glance)
 module Store {
     const K_SELECTIONS = "sel";
     const K_ARRIVALS = "arr";

@@ -1,6 +1,7 @@
 import Toybox.Lang;
 
 // Pure formatting helpers (unit tested in tests/FormatTest.mc).
+(:glance)
 module Format {
     // An arrival less than a minute away (or just gone) reads "now".
     function minutesText(t as Number, now as Number) as String {

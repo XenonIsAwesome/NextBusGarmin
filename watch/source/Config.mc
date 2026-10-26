@@ -1,6 +1,7 @@
 import Toybox.Lang;
 
 // Build-time configuration for the watch app. Everything tunable lives here.
+(:glance)
 module Config {
     // Must match Transport.PROTOCOL_VERSION in android/protocol (see protocol/PROTOCOL.md).
     const PROTOCOL_VERSION = 1;
@@ -20,6 +21,8 @@ module Config {
     // Show the fake scenario number ("[2] ...") in the footer; off for demos/videos.
     const FAKE_SCENARIO_TAG = false;
     const APP_VERSION = "0.1.0";
+    // false = no glance entry: the simulator then starts the full app directly.
+    const GLANCE_ENABLED = true;
     // Relevance: walking speed (m/s), buffer added to the walk (s), and the
     // distance beyond which a selection is deprioritised (m).
     const WALK_SPEED_MPS = 1.3;

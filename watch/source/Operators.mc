@@ -5,6 +5,7 @@ import Toybox.WatchUi;
 // Operator marks shown next to the line number: the operator's logo where we
 // have one (tools/logos/SOURCES.md), otherwise a short code on a colour. Ids
 // are curlbus / Ministry of Transport operator ids (https://curlbus.app/operators).
+(:glance)
 module Operators {
     // [id, code, colour, colour on 64-colour screens]. Colours of operators with a logo
     // are the logo's dominant colour (the most frequent rendered colour, not an average);

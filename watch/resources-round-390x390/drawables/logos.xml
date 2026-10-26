@@ -1,7 +1,11 @@
 <drawables xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <!-- Operator logos, see tools/logos/SOURCES.md -->
     <bitmap id="LogoEgged" filename="../logos/egged.png" />
+    <bitmap id="LogoEggedTaavura" filename="../logos/egged_taavura.png" />
     <bitmap id="LogoDan" filename="../logos/dan.png" />
+    <bitmap id="LogoNtt" filename="../logos/ntt.png" />
     <bitmap id="LogoNativExpress" filename="../logos/nateev.png" />
     <bitmap id="LogoMetropoline" filename="../logos/metropoline.png" />
+    <bitmap id="LogoSuperbus" filename="../logos/superbus.png" />
+    <bitmap id="LogoKavim" filename="../logos/kavim.png" />
 </drawables>

@@ -54,12 +54,20 @@ module Operators {
         var res = null;
         if (id == 3) {
             res = Rez.Drawables.LogoEgged;
+        } else if (id == 4) {
+            res = Rez.Drawables.LogoEggedTaavura;
         } else if (id == 5) {
             res = Rez.Drawables.LogoDan;
+        } else if (id == 7) {
+            res = Rez.Drawables.LogoNtt;
         } else if (id == 14) {
             res = Rez.Drawables.LogoNativExpress;
         } else if (id == 15) {
             res = Rez.Drawables.LogoMetropoline;
+        } else if (id == 16) {
+            res = Rez.Drawables.LogoSuperbus;
+        } else if (id == 18) {
+            res = Rez.Drawables.LogoKavim;
         }
         _logo = res == null ? null : WatchUi.loadResource(res) as WatchUi.BitmapResource;
         _logoId = id;

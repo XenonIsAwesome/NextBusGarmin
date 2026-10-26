@@ -2,16 +2,15 @@
 """Rebuilds the watch logo PNGs from tools/logos/*.svg, pre-scaled per screen size
 (drawScaledBitmap is not available on the target devices).
 
-Needs: pip install cairosvg pillow
+Needs: pip install resvg-py pillow   (resvg handles the mask-heavy NTT file that cairosvg cannot)
 Heights are 11% of the screen height, matching Operators.LOGO_HEIGHT_PERCENT.
 """
 import io, os
-import cairosvg
+import resvg_py
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
-NAMES = ["egged", "dan", "nateev", "metropoline"]
-SVG_FOR = {"nateev": "nateev", "egged": "egged", "dan": "dan", "metropoline": "metropoline"}
+NAMES = ["egged", "egged_taavura", "dan", "ntt", "nateev", "metropoline", "superbus", "kavim"]
 # screen size -> resource directory under watch/ (260 is the default set)
 SIZES = {
     218: "resources-round-218x218/logos",   # fr255s, fr255sm
@@ -24,8 +23,8 @@ for screen, outdir in SIZES.items():
     path = os.path.join(ROOT, "watch", outdir)
     os.makedirs(path, exist_ok=True)
     for name in NAMES:
-        svg = os.path.join(ROOT, "tools", "logos", SVG_FOR[name] + ".svg")
-        im = Image.open(io.BytesIO(cairosvg.svg2png(url=svg, output_height=h * 6))).convert("RGBA")
+        svg = os.path.join(ROOT, "tools", "logos", name + ".svg")
+        im = Image.open(io.BytesIO(bytes(resvg_py.svg_to_bytes(svg_path=svg, height=h * 6)))).convert("RGBA")
         im = im.crop(im.getbbox())
         im = im.resize((max(1, round(im.width * h / im.height)), h), Image.LANCZOS)
         im.save(os.path.join(path, name + ".png"), optimize=True)

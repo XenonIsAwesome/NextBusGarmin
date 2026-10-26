@@ -48,7 +48,10 @@ class FakePhone {
             [13, "13", "36601", "Beit Loewenstein/Ahuza", "Sport Campus/Weizmann", 32184760, 34855867, 3],
             [3, "531", "36602", "Ahuza/Ben Gurion", "Weizmann/Rehovot", 32190100, 34860200, 5],
             [4, "74", "36602", "Ahuza/Ben Gurion", "Kfar Saba", 32190100, 34860200, 18],
-            [5, "45", "36601", "Beit Loewenstein/Ahuza", "Rehovot", 32184760, 34855867, 14]
+            [5, "45", "36601", "Beit Loewenstein/Ahuza", "Rehovot", 32184760, 34855867, 14],
+            [6, "62", "36602", "Ahuza/Ben Gurion", "Netanya", 32190100, 34860200, 4],
+            [7, "811", "36601", "Beit Loewenstein/Ahuza", "Nazareth", 32184760, 34855867, 7],
+            [8, "20", "36602", "Ahuza/Ben Gurion", "Modiin", 32190100, 34860200, 16]
         ] as Array;
         if (scenario == 4) {
             sels = [] as Array;

@@ -46,7 +46,9 @@ class FakePhone {
         var sels = [
             [1, "29", "36601", "Beit Loewenstein/Ahuza", "HaShunit/Yorde Yam", 32184760, 34855867, 15],
             [13, "13", "36601", "Beit Loewenstein/Ahuza", "Sport Campus/Weizmann", 32184760, 34855867, 3],
-            [3, "531", "36602", "Ahuza/Ben Gurion", "Weizmann/Rehovot", 32190100, 34860200, 5]
+            [3, "531", "36602", "Ahuza/Ben Gurion", "Weizmann/Rehovot", 32190100, 34860200, 5],
+            [4, "74", "36602", "Ahuza/Ben Gurion", "Kfar Saba", 32190100, 34860200, 18],
+            [5, "45", "36601", "Beit Loewenstein/Ahuza", "Rehovot", 32184760, 34855867, 14]
         ] as Array;
         if (scenario == 4) {
             sels = [] as Array;

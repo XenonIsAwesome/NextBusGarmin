@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Next Bus</string>
+    <string name="app_name">Next Bus Companion</string>
 
     <string name="relay_channel">Watch relay</string>
-    <string name="relay_notification_title">Next Bus is serving your watch</string>
+    <string name="relay_notification_title">Next Bus Companion is serving your watch</string>
     <string name="relay_notification_text">Keeps live bus times flowing to the watch while its app is open</string>
     <string name="relay_stop">Stop</string>
 

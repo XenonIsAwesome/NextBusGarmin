@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">אוטובוס הבא</string>
+    <string name="app_name">מלווה אוטובוס הבא</string>
 
     <string name="relay_channel">גשר לשעון</string>
-    <string name="relay_notification_title">אוטובוס הבא משרת את השעון שלך</string>
+    <string name="relay_notification_title">מלווה אוטובוס הבא משרת את השעון שלך</string>
     <string name="relay_notification_text">מעביר זמני אוטובוסים חיים לשעון כשהאפליקציה בשעון פתוחה</string>
     <string name="relay_stop">עצור</string>
 

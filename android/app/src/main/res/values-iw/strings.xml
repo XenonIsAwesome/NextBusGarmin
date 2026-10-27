@@ -19,6 +19,11 @@
     <string name="error_prefix">בעיה: %1$s</string>
     <string name="mismatch_phone_old">האפליקציה בשעון חדשה יותר. יש לעדכן את האפליקציה בטלפון.</string>
     <string name="mismatch_watch_old">האפליקציה בשעון ישנה יותר. יש לעדכן את האפליקציה בשעון.</string>
+    <string name="gcm_not_installed">Garmin Connect לא מותקן בטלפון הזה</string>
+    <string name="gcm_upgrade_needed">יש לעדכן את Garmin Connect</string>
+    <string name="gcm_start_failed">לא ניתן להפעיל את שירות Garmin Connect IQ (%1$s)</string>
+    <string name="gcm_no_watch">אין שעון Garmin מותאם ב-Garmin Connect</string>
+    <string name="gcm_error">שגיאת Garmin Connect IQ: %1$s</string>
     <string name="open_play_store">פתח את חנות Play</string>
     <string name="simulator_mode">מצב סימולטור (adb)</string>
     <string name="simulator_mode_hint">לפיתוח: התחברות לסימולטור Connect IQ במקום Garmin Connect. נכנס לתוקף בהפעלה מחדש של הגשר.</string>

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.garmin.android.connectiq.exception.InvalidStateException
+import app.nextbus.R
 import app.nextbus.core.SendResult
 import app.nextbus.core.WatchLink
 import com.garmin.android.connectiq.ConnectIQ
@@ -71,9 +72,9 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
                     it.copy(
                         ready = false,
                         problem = when (status) {
-                            IQSdkErrorStatus.GCM_NOT_INSTALLED -> "Garmin Connect is not installed on this phone"
-                            IQSdkErrorStatus.GCM_UPGRADE_NEEDED -> "Garmin Connect needs to be updated"
-                            else -> "Could not start the Garmin Connect IQ service ($status)"
+                            IQSdkErrorStatus.GCM_NOT_INSTALLED -> context.getString(R.string.gcm_not_installed)
+                            IQSdkErrorStatus.GCM_UPGRADE_NEEDED -> context.getString(R.string.gcm_upgrade_needed)
+                            else -> context.getString(R.string.gcm_start_failed, status.toString())
                         },
                     )
                 }
@@ -101,7 +102,7 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
             val known = s.knownDevices.orEmpty() + s.connectedDevices.orEmpty()
             known.forEach { devices[it.deviceIdentifier] = it }
             if (devices.isEmpty()) {
-                _state.update { it.copy(ready = true, problem = "No Garmin watch is paired in Garmin Connect") }
+                _state.update { it.copy(ready = true, problem = context.getString(R.string.gcm_no_watch)) }
                 return
             }
             for (d in devices.values) {
@@ -126,9 +127,9 @@ class GarminLink(private val context: Context, appId: String) : WatchLink {
             // Tethered: the simulator may be started after the app, so keep trying quietly.
             if (tethered) main.postDelayed({ discover(attempt + 1) }, 2000)
             else if (attempt < 5) main.postDelayed({ discover(attempt + 1) }, 500)
-            else _state.update { it.copy(problem = "Garmin Connect IQ error: ${e.message}") }
+            else _state.update { it.copy(problem = context.getString(R.string.gcm_error, e.message ?: "")) }
         } catch (e: Exception) {
-            _state.update { it.copy(problem = "Garmin Connect IQ error: ${e.message}") }
+            _state.update { it.copy(problem = context.getString(R.string.gcm_error, e.message ?: "")) }
         }
     }
 

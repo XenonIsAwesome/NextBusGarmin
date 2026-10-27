@@ -155,7 +155,7 @@ private fun StatusCard(vm: MainViewModel, status: RelayStatus, relayOn: Boolean)
                     color = MaterialTheme.colorScheme.error,
                 )
             }
-            if (status.linkProblem?.contains("not installed") == true) {
+            if (status.linkProblem == stringResource(R.string.gcm_not_installed)) {
                 TextButton(onClick = {
                     context.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.garmin.android.apps.connectmobile")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
